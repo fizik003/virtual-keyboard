@@ -1,0 +1,29 @@
+.textarea {
+    width: 97.1%;
+    height: 150px;
+    border-radius: 10px;
+    padding: 10px;
+    outline: none;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.key {
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
+}
+
+.keyboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    border: 3px solid gray;
+}
+
+
+.wrapper {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
