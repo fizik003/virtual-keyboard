@@ -40,6 +40,8 @@ const symbolsEventCode = [
   'Ctrl', 'Win', 'Alt', ' ', 'Alt', '←', '↓', '→', 'Ctrl'
 ];
 
+const noPrint = ['Tab', 'Del', 'CapsLock', 'Shift', 'Ctrl', 'Win', 'Alt', 'Control', '←', '↑', '↓', '→'];
+
 class KeyBoard {
   constructor (){
     this.language = localStorage.getItem('language') || 'EN'
@@ -82,10 +84,8 @@ class KeyBoard {
     this.body.append(this.wrapper)
   }
 
-  writeSymbols(keys){
-    let symbols;
-    if (this.language == 'EN') symbols = engSymbols;
-    if (this.language =='RU') symbols = rusSymbols;
+  writeSymbols(keys, symbols){
+
     keys.forEach((el,i) => {
       el.textContent = symbols[i];
     })
@@ -93,7 +93,72 @@ class KeyBoard {
 
   addSymbol(symbol) {
     let textarea = document.querySelector('.textarea').value;
+    if(noPrint.includes(symbol)){
+      textarea += '';
+    }
+    else if (symbol === 'Backspace') {
+      textarea = textarea.slice(0, -1);
+    }
+    else if(symbol === 'Enter') {
+      textarea += '\n';
+    }
+    else {
+      textarea += symbol;
+    }
+    document.querySelector('.textarea').value = textarea;
   }
+
+  clickOnKey(keys){
+    keys.forEach((el) => {
+      el.addEventListener('click', (e) =>{
+        if (e.target.textContent == 'Caps Lock'){
+          e.target.classList.toggle('active')
+          if(e.target.classList.contains('active')){
+            if(this.language === 'EN') {
+              this.writeSymbols(keys, engSymbolsShift)
+            }
+            else{
+              this.writeSymbols(keys,symbolsShift)
+            }
+          }
+          else if (this.language == 'EN') {
+            this.writeSymbols(keys, engSymbols)
+          }
+          else {
+            this.writeSymbols(keys, rusSymbols)
+          }
+        }
+        else {
+          e.target.classList.add('active');
+          setTimeout(() => {e.target.classList.remove('active')}, 220);
+          this.addSymbol(e.target.textContent);
+        }
+      })
+    })
+  }
+
+  keyboardPress(keys) {
+    document.addEventListener('keydown', (e) =>{
+      let indexPressKey = symbolsEventCode.indexOf(e.code);
+      keys[indexPressKey].classList.add('active');
+
+      if(e.altKey && e.shiftKey) {
+        this.language = (this.language === 'EN') ? this.language = 'RU' : 'EN'
+        localStorage.setItem('language', this.language);
+      }
+
+      if (e.shiftKey) {
+        if(this.language == 'EN') {
+          this.addSymbol(keys, engSymbolsShift);
+        }
+        else {
+          this.addSymbol(keys, symbolsEventCode);
+        }
+      }
+    })
+  }
+
+
 
 
 }
@@ -103,8 +168,16 @@ window.onload = () => {
   const keyboard = new KeyBoard();
   keyboard.createDOMs();
   const keys = document.querySelectorAll('.key');
-  keyboard.writeSymbols(keys);
-
+  let symbols;
+  if (keyboard.language == 'EN'){
+    symbols = engSymbols;
+  }
+  else if (keyboard.language == 'RU'){
+    symbols = rusSymbols;
+  }
+  keyboard.writeSymbols(keys, symbols);
+  keyboard.clickOnKey(keys);
+  keyboard.keyboardPress(keys);
 
 }
 

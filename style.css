@@ -27,3 +27,7 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+.active {
+    background-color: aqua;
+}
