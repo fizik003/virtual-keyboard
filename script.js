@@ -1,7 +1,11 @@
+document.addEventListener('keydown', (e) => {
+  console.log(e)
+})
+
 const rusSymbols = [
     'ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
     'Tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '\\', 'Del',
-    'Caps Lock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'Enter',
+    'CapsLock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'Enter',
     'Shift', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', '.', '↑', 'Shift',
     'Ctrl', 'Win', 'Alt', ' ', 'Alt', '←', '↓', '→', 'Ctrl',
   ];
@@ -9,7 +13,7 @@ const rusSymbols = [
 const engSymbols = [
     '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
     'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\', 'Del',
-    'Caps Lock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'Enter',
+    'CapsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 'Enter',
     'Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', '↑', 'Shift',
     'Ctrl', 'Win', 'Alt', ' ', 'Alt', '←', '↓', '→', 'Ctrl',
 ];
@@ -26,7 +30,7 @@ const symbolsEventCode = [
   const symbolsShift = [
     'Ё', '!', '"', '№', ';', '%', ':', '?', '*', '(', ')', '_', '+', 'Backspace',
     'Tab', 'Й', 'Ц', 'У', 'К', 'Е', 'Н', 'Г', 'Ш', 'Щ', 'З', 'Х', 'Ъ', '/', 'Del',
-    'Caps Lock', 'Ф', 'Ы', 'В', 'А', 'П', 'Р', 'О', 'Л', 'Д', 'Ж', 'Э', 'Enter',
+    'CapsLock', 'Ф', 'Ы', 'В', 'А', 'П', 'Р', 'О', 'Л', 'Д', 'Ж', 'Э', 'Enter',
     'Shift', 'Я', 'Ч', 'С', 'М', 'И', 'Т', 'Ь', 'Б', 'Ю', ',', '↑', 'Shift',
     'Ctrl', 'Win', 'Alt', ' ', 'Alt', '←', '↓', '→', 'Ctrl'
   ];
@@ -35,12 +39,12 @@ const symbolsEventCode = [
   const engSymbolsShift = [
   '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 'Backspace',
   'Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|', 'Del',
-  'Caps Lock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', 'Enter',
+  'CapsLock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', 'Enter',
   'Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', '↑', 'Shift',
   'Ctrl', 'Win', 'Alt', ' ', 'Alt', '←', '↓', '→', 'Ctrl'
 ];
 
-const noPrint = ['Tab', 'Del', 'CapsLock', 'Shift', 'Ctrl', 'Win', 'Alt', 'Control', '←', '↑', '↓', '→'];
+const noPrint = ['ShiftRight','ShiftLeft','Tab', 'Del', 'CapsLock', 'Shift', 'Ctrl', 'Win', 'Alt', 'Control', '←', '↑', '↓', '→'];
 
 class KeyBoard {
   constructor (){
@@ -99,6 +103,9 @@ class KeyBoard {
     else if (symbol === 'Backspace') {
       textarea = textarea.slice(0, -1);
     }
+    else if(symbol === 'Del') {
+      textarea = textarea.slice(0,1);
+    }
     else if(symbol === 'Enter') {
       textarea += '\n';
     }
@@ -111,7 +118,7 @@ class KeyBoard {
   clickOnKey(keys){
     keys.forEach((el) => {
       el.addEventListener('click', (e) =>{
-        if (e.target.textContent == 'Caps Lock'){
+        if (e.target.textContent == 'CapsLock'){
           e.target.classList.toggle('active')
           if(e.target.classList.contains('active')){
             if(this.language === 'EN') {
@@ -149,12 +156,65 @@ class KeyBoard {
 
       if (e.shiftKey) {
         if(this.language == 'EN') {
-          this.addSymbol(keys, engSymbolsShift);
+          this.writeSymbols(keys, engSymbolsShift);
         }
         else {
-          this.addSymbol(keys, symbolsEventCode);
+          this.writeSymbols(keys, symbolsShift);
         }
       }
+      if(e.getModifierState('CapsLock')) {
+        if (e.shiftKey) {
+          if(this.language == 'EN') {
+            this.writeSymbols(keys, engSymbols);
+          } else {
+            this.writeSymbols(keys, rusSymbols);
+          }
+        } else if (this.language == 'EN') {
+          this.writeSymbols(keys, engSymbolsShift);
+        } else {
+          this.writeSymbols(keys, symbolsEventCode);
+        }
+      }
+
+      if(e.repeat) {
+        this.addSymbol(keys[indexPressKey].textContent);
+      }
+      else{
+        this.addSymbol(keys[indexPressKey].textContent);
+      }
+    })
+
+    document.addEventListener('keyup', (e) => {
+      if(e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        if (e.getModifierState('CapsLock')){
+          if(this.language == 'EN') {
+            this.writeSymbols(keys, engSymbolsShift);
+          } else {
+            this.writeSymbols(keys, symbolsShift);
+          }
+        } else if(this.language == 'EN') {
+          this.writeSymbols(keys, engSymbols)
+        } else {
+          this.writeSymbols(keys, rusSymbols)
+        }
+      }
+
+      if(e.getModifierState('CapsLock') === false) {
+        if (!e.shiftKey) {
+          if(this.language == 'EN') {
+            this.writeSymbols(keys, engSymbols);
+          } else{
+            this.writeSymbols(keys, rusSymbols);
+          }
+        } else if(this.language == 'EN') {
+          this.writeSymbols(keys, engSymbolsShift);
+        } else {
+          this.writeSymbols(keys, symbolsShift);
+        }
+      }
+      let indexPressKey = symbolsEventCode.indexOf(e.code);
+      keys[indexPressKey].classList.remove('active');
+
     })
   }
 
