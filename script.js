@@ -20,7 +20,7 @@ const symbolsEventCode = [
     "Tab", "KeyQ", "KeyW", "KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP", "BracketLeft", "BracketRight", "Backslash", "Delete",
     "CapsLock", "KeyA", "KeyS", "KeyD", "KeyF", "KeyG", "KeyH", "KeyJ", "KeyK", "KeyL", "Semicolon", "Quote", "Enter",
     "ShiftLeft", "KeyZ", "KeyX", "KeyC", "KeyV", "KeyB", "KeyN", "KeyM", "Comma", "Period", "Slash", "ArrowUp", "ShiftRight",
-    "ControlLeft", "Windows", "AltLeft", "Space", "AltRight", "ArrowLeft", "ArrowDown", "ArrowRight", "ControlRight"
+    "ControlLeft", "MetaLeft", "AltLeft", "Space", "AltRight", "ArrowLeft", "ArrowDown", "ArrowRight", "ControlRight"
   ];
   
   const symbolsShift = [
@@ -73,7 +73,13 @@ class KeyBoard {
     this.wrapper.append(this.textarea);
     this.wrapper.append(this.keyboard);
     this.body = document.querySelector("body");
+    
+    this.hint = document.createElement("div");
+    this.hint.innerText = "change language ALT + SHIFT";
+    this.hint.className = "hint";
+    this.wrapper.append(this.hint);
     this.body.append(this.wrapper);
+
   }
 
   writeSymbols(keys, symbols){
@@ -140,6 +146,8 @@ class KeyBoard {
     document.addEventListener("keydown", (e) =>{
       let indexPressKey = symbolsEventCode.indexOf(e.code);
       keys[indexPressKey].classList.add("active");
+      console.log(indexPressKey);
+      console.log(e.code);
       e.preventDefault();
 
       if(e.altKey && e.shiftKey) {

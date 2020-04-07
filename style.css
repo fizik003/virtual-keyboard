@@ -61,3 +61,11 @@
 .key-space{
     width: 344px;
 }
+
+
+.hint {
+    margin-top: 20px;
+    font-weight: 600;
+    text-align: center;
+    color: gray;
+}
